@@ -1,6 +1,6 @@
 # Homemade-DiffieHelman
 
-This is a home made Diffie-Helman style encryption/decryption algorithm project.
+This is a home made Diffie-Helman style key exchange and AES encryption algorithm project.
 *(for the learnings of yours truly)*
 
 # INSTALL
