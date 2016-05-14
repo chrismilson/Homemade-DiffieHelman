@@ -48,6 +48,30 @@ Matrix *matrixProduct(Matrix *a, Matrix *b) {
   }
 }
 
+Matrix *scalarProduct(int s, Matrix *a) {
+  Matrix *result;
+  result = newMatrix(a->rows, a->cols);
+  int i, j;
+  for (i = 0; i < a->rows; i++) {
+    for (j = 0; j < a->cols; j++) {
+      result->entries[i + j * a->rows] = s * a->entries[i + j * a->rows];
+    }
+  }
+  return result;
+}
+
+Matrix *scalarQuotient(int s, Matrix *a) {
+  Matrix *result;
+  result = newMatrix(a->rows, a->cols);
+  int i, j;
+  for (i = 0; i < a->rows; i++) {
+    for (j = 0; j < a->cols; j++) {
+      result->entries[i + j * a->rows] = a->entries[i + j * a->rows] / s;
+    }
+  }
+  return result;
+}
+
 void matrixPrint(Matrix *matrix) {
   int i, j;
   for (i = 0; i < matrix->cols; i++) {
@@ -141,7 +165,7 @@ Matrix *unshiftCols(Matrix *matrix) {
   int i, j;
   Matrix *result;
   result = newMatrix(4, 4);
-  if (matrix->rows == 4 || matrix->cols == 4) {
+  if (matrix->rows == 4 && matrix->cols == 4) {
     for (i = 0; i < 4; i++) {
       for (j = 0; j < 4; j++) {
         result->entries[i + j * 4] = matrix->entries[((i + (4 - j)) % 4) + j * 4];
@@ -150,6 +174,54 @@ Matrix *unshiftCols(Matrix *matrix) {
     return result;
   }
   return NULL;
+}
+
+Matrix *mixCols(Matrix *matrix) {
+  if (matrix->rows != 4 || matrix->cols != 4) {
+    return NULL;
+  }
+
+  int *mixer;
+  mixer = malloc(sizeof(int) * 4);
+  mixer[0] = 33620227;
+  mixer[1] = 50462977;
+  mixer[2] = 16974337;
+  mixer[3] = 16843522;
+
+  Matrix *result;
+
+  result = matrixProduct(setBlock(mixer), matrix);
+  free(mixer);
+  return result;
+}
+
+Matrix *unmixCols(Matrix *matrix) {
+  if (matrix->rows != 4 || matrix->cols != 4) {
+    return NULL;
+  }
+
+  Matrix *unmixer, *result;
+  unmixer = newMatrix(4, 4);
+  unmixer->entries[0] = -4;
+  unmixer->entries[1] = 3;
+  unmixer->entries[2] = -11;
+  unmixer->entries[3] = 17;
+  unmixer->entries[4] = 17;
+  unmixer->entries[5] = -4;
+  unmixer->entries[6] = 3;
+  unmixer->entries[7] = -11;
+  unmixer->entries[8] = -11;
+  unmixer->entries[9] = 17;
+  unmixer->entries[10] = -4;
+  unmixer->entries[11] = 3;
+  unmixer->entries[12] = 3;
+  unmixer->entries[13] = -11;
+  unmixer->entries[14] = 17;
+  unmixer->entries[15] = -4;
+
+  result = matrixProduct(unmixer, matrix);
+  result = scalarQuotient(35, result);
+  return result;
 }
 
 Matrix *matrixXOR(Matrix *a, Matrix *b) {

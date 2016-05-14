@@ -22,6 +22,10 @@ int set(int, int, int, Matrix*);
 
 Matrix *matrixProduct(Matrix*, Matrix*);
 
+Matrix *scalarProduct(int, Matrix*);
+
+Matrix *scalarQuotient(int, Matrix*);
+
 void matrixPrint(Matrix*);
 
 Matrix *setBlock(int[4]);
@@ -35,6 +39,10 @@ Matrix *unshiftRows(Matrix*);
 Matrix *shiftCols(Matrix*);
 
 Matrix *unshiftCols(Matrix*);
+
+Matrix *mixCols(Matrix*);
+
+Matrix *unmixCols(Matrix *matrix);
 
 Matrix *matrixXOR(Matrix*, Matrix*);
 
