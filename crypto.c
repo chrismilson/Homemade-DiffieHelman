@@ -1,4 +1,4 @@
-#include "main.h"
+#include "crypto.h"
 
 long long fastPow(int a, int n, int m) {
   long long answer = 1;
@@ -24,19 +24,25 @@ int main(int argc, char  **argv) {
   int p = 77807857; // large prime
   int g = 73892587; // another large prime less than p
   int encodeFlag = 0, decodeFlag = 0, privKeyGenFlag = 0, publicKeyGenFlag = 0;
+  char *text = NULL, *output = "output.txt";
 
   int privateKey[4], privFlag = 0; // this is the private key of the person encrypting/decrypting the data.
   int publicKey[4], pubFlag = 0;  // this is the public key of the person that is the desired recipient/sender.
   int sharedKey[4];
 
   int c;
-  while ((c = getopt(argc, argv, "edkK")) != -1) {
+  while ((c = getopt(argc, argv, "e:d:o:kK")) != -1) {
     switch(c) {
       case 'e':
         encodeFlag = 1;
+        text = optarg;
         break;
       case 'd':
         decodeFlag = 1;
+        text = optarg;
+        break;
+      case 'o':
+        output = optarg;
         break;
       case 'k':
         privKeyGenFlag = 1;
@@ -87,13 +93,13 @@ int main(int argc, char  **argv) {
     return 1;
   }
 
-  if (!privFlag && privKeyGenFlag) {
+  if (!privFlag && !privKeyGenFlag) {
     printf("What is your private key? ");
     scanf("%d %d %d %d", privateKey, privateKey + 1,
       privateKey + 2, privateKey + 3);
   }
 
-  if (!pubFlag && (privKeyGenFlag || publicKeyGenFlag)) {
+  if (!pubFlag && !(privKeyGenFlag || publicKeyGenFlag)) {
     if (encodeFlag) {
       printf("What is the public key of the intended recipient? ");
       scanf("\n %d %d %d %d", publicKey, publicKey + 1,
@@ -112,9 +118,9 @@ int main(int argc, char  **argv) {
   printf("\n");
 
   if (encodeFlag) {
-    encode("test/pt.txt", "test/ct.txt", sharedKey);
+    encode(text, output, sharedKey);
   } else {
-    decode("test/ct.txt", "test/out.txt", sharedKey);
+    decode(text, output, sharedKey);
   }
 
   return 0;

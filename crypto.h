@@ -1,6 +1,6 @@
-#ifndef MAIN_H
+#ifndef CRYPTO_H
 
-#define MAIN_H
+#define CRYPTO_H
 
 #include <stdio.h>
 #include <stdlib.h>

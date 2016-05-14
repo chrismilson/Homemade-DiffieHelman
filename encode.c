@@ -54,7 +54,6 @@ void encode(char *plaintext, char *cyphertext, int *sharedKey) {
 
   block[(inSize % 16) / 4] = 0;
   for (i = 0; i < inSize % 4; i++) {
-    printf("cat\n");
     block[(inSize % 16) / 4] |= fgetc(ptFile) << (8 * (4 - i));
   }
 
