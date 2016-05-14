@@ -14,10 +14,12 @@ void decode(char *ciphertext, char *plaintext, int *sharedKey) {
   Matrix *sharedMatrix;
   sharedMatrix = setBlock(sharedKey);
 
+  int *block;
+  block = malloc(sizeof(int) * 4);
+  Matrix *cipher, *plain;
+
   int i, j;
-  for (i = 0; i < inSize / 16; i++) {
-    int *block;
-    block = malloc(sizeof(int) * 4);
+  for (i = 0; i < inSize / 16 - 1; i++) {
     for (j = 0; j < 4; j++) {
       block[j] = 0;
       block[j] |= fgetc(ctFile);
@@ -25,7 +27,6 @@ void decode(char *ciphertext, char *plaintext, int *sharedKey) {
       block[j] |= fgetc(ctFile) << 16;
       block[j] |= fgetc(ctFile) << 24;
     }
-    Matrix *cipher, *plain;
     cipher = setBlock(block);
 
     plain = unshiftRows(matrixXOR(sharedMatrix, cipher));
@@ -36,9 +37,33 @@ void decode(char *ciphertext, char *plaintext, int *sharedKey) {
       fputc((block[j] >> 16) & 0xff, ptFile);
       fputc((block[j] >> 24) & 0xff, ptFile);
     }
-    free(block);
   }
 
-  fclose(ctFile); fclose(ctFile);
+  for (j = 0; j < 4; j++) {
+    block[j] = 0;
+    block[j] |= fgetc(ctFile);
+    block[j] |= fgetc(ctFile) << 8;
+    block[j] |= fgetc(ctFile) << 16;
+    block[j] |= fgetc(ctFile) << 24;
+  }
+  cipher = setBlock(block);
+
+  plain = unshiftRows(matrixXOR(sharedMatrix, cipher));
+  block = getBlock(plain);
+
+  char ch;
+  for (j = 0; j < 4; j++) {
+    for (i = 0; i < 4; i++) {
+      if ((ch = (block[j] >> (i * 8)) & 0xff) == EOF) {
+        free(block);
+        fclose(ctFile); fclose(ptFile);
+        return;
+      }
+      fputc(ch, ptFile);
+    }
+  }
+
+  free(block);
+  fclose(ctFile); fclose(ptFile);
   return;
 }

@@ -14,10 +14,12 @@ void encode(char *plaintext, char *cyphertext, int *sharedKey) {
   Matrix *sharedMatrix;
   sharedMatrix = setBlock(sharedKey);
 
+  Matrix *plain, *cipher;
+  int *block;
+  block = malloc(sizeof(int) * 4);
+
   int i, j;
   for (i = 0; i < inSize / 16; i++) {
-    int *block;
-    block = malloc(sizeof(int) * 4);
     for (j = 0; j < 4; j++) {
       block[j] = 0;
       block[j] |= fgetc(ptFile);
@@ -25,9 +27,7 @@ void encode(char *plaintext, char *cyphertext, int *sharedKey) {
       block[j] |= fgetc(ptFile) << 16;
       block[j] |= fgetc(ptFile) << 24;
     }
-    Matrix *plain, *cipher;
     plain = setBlock(block);
-
     cipher = matrixXOR(sharedMatrix, shiftRows(plain));
     block = getBlock(cipher);
     for (j = 0; j < 4; j++) {
@@ -36,9 +36,46 @@ void encode(char *plaintext, char *cyphertext, int *sharedKey) {
       fputc((block[j] >> 16) & 0xff, ctFile);
       fputc((block[j] >> 24) & 0xff, ctFile);
     }
-    free(block);
   }
 
+  if (!(inSize % 16)) {
+    free(block);
+    fclose(ptFile); fclose(ctFile);
+    return;
+  }
+
+  for (i = 0; i < (inSize % 16) / 4; i++) {
+    block[i] = 0;
+    block[i] |= fgetc(ptFile);
+    block[i] |= fgetc(ptFile) << 8;
+    block[i] |= fgetc(ptFile) << 16;
+    block[i] |= fgetc(ptFile) << 24;
+  }
+
+  block[(inSize % 16) / 4] = 0;
+  for (i = 0; i < inSize % 4; i++) {
+    printf("cat\n");
+    block[(inSize % 16) / 4] |= fgetc(ptFile) << (8 * (4 - i));
+  }
+
+  for (i = inSize % 4; i < inSize % 16; i++) {
+    block[(inSize % 16) / 4] |= (rand() % 255) << (8 * (4 - i));
+  }
+
+  for (i = (inSize % 16) / 4 + 1; i < 4; i++) {
+    block[i] = rand() % 2147483648;
+  }
+
+  plain = setBlock(block);
+  cipher = matrixXOR(sharedMatrix, shiftRows(plain));
+  block = getBlock(cipher);
+  for (j = 0; j < 4; j++) {
+    fputc(block[j] & 0xff, ctFile);
+    fputc((block[j] >> 8) & 0xff, ctFile);
+    fputc((block[j] >> 16) & 0xff, ctFile);
+    fputc((block[j] >> 24) & 0xff, ctFile);
+  }
+  free(block);
   fclose(ptFile); fclose(ctFile);
   return;
 }
