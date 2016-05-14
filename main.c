@@ -66,8 +66,13 @@ int main(int argc, char  **argv) {
   for (i = 0; i < 4; i++) {
     sharedKey[i] = (int) fastPow(publicKey[i], privateKey[i], p);
   }
+  printf("\n");
 
-  encode("test/pt.txt", "test/ct.txt", sharedKey);
+  if (encodeFlag) {
+    encode("test/pt.txt", "test/ct.txt", sharedKey);
+  } else {
+    decode("test/ct.txt", "test/out.txt", sharedKey);
+  }
 
   return 0;
 }

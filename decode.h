@@ -1,12 +1,12 @@
-#ifndef ENCODE_H
+#ifndef DECODE_H
 
-#define ENCODE_H
+#define DECODE_H
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include "matrix.h"
 
-void encode(char*, char*, int*);
+void decode(char*, char*, int*);
 
 #endif

@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "encode.h"
-//#include "decode.h"
+#include "decode.h"
 
 long long fastPow(int, int, int);
 
