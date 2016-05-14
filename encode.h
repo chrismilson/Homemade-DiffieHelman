@@ -7,6 +7,6 @@
 #include <unistd.h>
 #include "aes/matrix.h"
 
-void encode(char*, char*, int);
+void encode(char*, char*, int*);
 
 #endif

@@ -21,26 +21,18 @@ int main(int argc, char  **argv) {
   int g = 73892587; // another large prime less than p
   int encodeFlag = 0, decodeFlag = 0;
 
-  int privateKey, privFlag = 0; // this is the private key of the person encrypting/decrypting the data.
-  int publicKey, pubFlag = 0;  // this is the public key of the person that is the desired recipient/sender.
-  long sharedKey;
+  int privateKey[4], privFlag = 0; // this is the private key of the person encrypting/decrypting the data.
+  int publicKey[4], pubFlag = 0;  // this is the public key of the person that is the desired recipient/sender.
+  int sharedKey[4];
 
   int c;
-  while ((c = getopt(argc, argv, "edp:P:")) != -1) {
+  while ((c = getopt(argc, argv, "ed")) != -1) {
     switch(c) {
       case 'e':
         encodeFlag = 1;
         break;
       case 'd':
         decodeFlag = 1;
-        break;
-      case 'p':
-        privFlag = 1;
-        privateKey = strtol(optarg, NULL, 10);
-        break;
-      case 'P':
-        pubFlag = 1;
-        publicKey = strtol(optarg, NULL, 10);
         break;
       default:
         break;
@@ -54,23 +46,28 @@ int main(int argc, char  **argv) {
 
   if (!privFlag) {
     printf("What is your private key? ");
-    scanf("\n %d", &privateKey);
+    scanf("%d %d %d %d", privateKey, privateKey + 1,
+      privateKey + 2, privateKey + 3);
   }
 
   if (!pubFlag) {
     if (encodeFlag) {
       printf("What is the public key of the intended recipient? ");
-      scanf("\n %d", &publicKey);
+      scanf("\n %d %d %d %d", publicKey, publicKey + 1,
+        publicKey + 2, publicKey + 3);
     } else {
       printf("What is the public key of the sender? ");
-      scanf("\n %d", &publicKey);
+      scanf("\n %d %d %d %d", publicKey, publicKey + 1,
+        publicKey + 2, publicKey + 3);
     }
   }
 
-  sharedKey = fastPow(publicKey, privateKey, p);
+  int i;
+  for (i = 0; i < 4; i++) {
+    sharedKey[i] = (int) fastPow(publicKey[i], privateKey[i], p);
+  }
 
-  encode("cyphertext.txt", "output.txt", sharedKey);
-  // encode("test.txt", "cyphertext.txt", sharedKey);
+  encode("test/pt.txt", "test/ct.txt", sharedKey);
 
   return 0;
 }
