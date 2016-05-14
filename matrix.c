@@ -14,7 +14,7 @@ int get(int x, int y, Matrix *a) {
   if (x < a->rows && y < a->cols && x >= 0 && y >= 0) {
     return a->entries[(x) + (y) * a->cols];
   } else {
-    return NAN;
+    return 0;
   }
 }
 
