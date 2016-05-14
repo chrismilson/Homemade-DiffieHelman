@@ -3,10 +3,12 @@
 This is a home made Diffie-Helman style encryption/decryption algorithm project.
 *(for the learnings of yours truly)*
 
-INSTALL
-================================================================================
+# INSTALL
 
 just do make and eerything gets done.
+
+# USAGE
+
 
 To get a public/private key combo, do
 
@@ -30,4 +32,4 @@ To set the output location of either the encoded or decoded file foo to bar do
 
     ./crypto -e foo -o bar
 
-Thats it! Now you can publish your public key and communicate securely (Up to the assumption that P != NP).
+Thats it! Now you can publish your public key and communicate securely (As long as P != NP).
