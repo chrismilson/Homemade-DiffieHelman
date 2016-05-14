@@ -5,7 +5,7 @@ This is a home made Diffie-Helman style encryption/decryption algorithm project.
 
 # INSTALL
 
-just do make and eerything gets done.
+just do make and everything gets done.
 
 # USAGE
 
