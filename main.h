@@ -10,4 +10,6 @@
 
 long long fastPow(int, int, int);
 
+int generateNewKey(int);
+
 #endif
