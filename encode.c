@@ -29,9 +29,9 @@ void encode(char *plaintext, char *cyphertext, int *sharedKey) {
     }
     plain = setBlock(block);
     cipher = shiftRows(plain);
-    cipher = mixCols(cipher);
     cipher = matrixXOR(sharedMatrix, cipher);
-    
+
+    block = getBlock(cipher);
     for (j = 0; j < 4; j++) {
       fputc(block[j] & 0xff, ctFile);
       fputc((block[j] >> 8) & 0xff, ctFile);
@@ -55,12 +55,12 @@ void encode(char *plaintext, char *cyphertext, int *sharedKey) {
   }
 
   block[(inSize % 16) / 4] = 0;
-  for (i = 0; i < inSize % 4; i++) {
-    block[(inSize % 16) / 4] |= fgetc(ptFile) << (8 * (4 - i));
+  for (i = 0; i < inSize % 4 + 1; i++) {
+    block[(inSize % 16) / 4] |= fgetc(ptFile) << (8 * i);
   }
 
-  for (i = inSize % 4; i < inSize % 16; i++) {
-    block[(inSize % 16) / 4] |= (rand() % 255) << (8 * (4 - i));
+  for (i = inSize % 4 + 1; i < 4; i++) {
+    block[(inSize % 16) / 4] |= (rand() % 255) << (8 * i);
   }
 
   for (i = (inSize % 16) / 4 + 1; i < 4; i++) {
@@ -69,7 +69,6 @@ void encode(char *plaintext, char *cyphertext, int *sharedKey) {
 
   plain = setBlock(block);
   cipher = shiftRows(plain);
-  cipher = mixCols(cipher);
   cipher = matrixXOR(sharedMatrix, cipher);
 
   block = getBlock(cipher);

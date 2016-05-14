@@ -29,8 +29,7 @@ void decode(char *ciphertext, char *plaintext, int *sharedKey) {
     }
     cipher = setBlock(block);
     plain = matrixXOR(sharedMatrix, cipher);
-    plain = unmixCols(plain);
-    plain = unshiftRows(plain)
+    plain = unshiftRows(plain);
 
     block = getBlock(plain);
     for (j = 0; j < 4; j++) {
@@ -50,11 +49,9 @@ void decode(char *ciphertext, char *plaintext, int *sharedKey) {
   }
   cipher = setBlock(block);
   plain = matrixXOR(sharedMatrix, cipher);
-  plain = unmixCols(plain);
-  plain = unshiftRows(plain)
+  plain = unshiftRows(plain);
 
   block = getBlock(plain);
-
   char ch;
   for (j = 0; j < 4; j++) {
     for (i = 0; i < 4; i++) {
